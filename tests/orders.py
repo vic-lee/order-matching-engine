@@ -1,11 +1,11 @@
 import falcon
 import json
-from order_resources import OrderResources
+from orders_db import OrdersDatabase
 from orders_spec import trader_id_key, order_key,\
     order_symbol_key, order_quantity_key, order_type_key
 
 
-orders_db = OrderResources()
+orders_db = OrdersDatabase()
 
 class Orders:
     def is_order_valid(self, req):

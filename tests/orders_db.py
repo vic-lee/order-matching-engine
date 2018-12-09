@@ -1,7 +1,7 @@
 from orders_spec import trader_id_key, order_key,\
     order_symbol_key, order_quantity_key, order_type_key
 
-class OrderResources:
+class OrdersDatabase:
 
     """
     `orders` structure:
