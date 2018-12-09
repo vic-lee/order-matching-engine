@@ -30,7 +30,6 @@ class Orders:
             else:
                 self.client_json = {"Message": "Missing key order or traderId" }
                 return False
-            return True
         except ValueError, e:
             self.client_json = {"Message": "Empty input"}
             return False
@@ -43,8 +42,9 @@ class Orders:
     def on_post(self, req, resp):
         validated = self.is_order_valid(req)
         if (validated):
-            resp.status = falcon.HTTP_200
             orders_db.add_order(self.client_json)
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps({ "Message": "Post successful" })
         else:
+            resp.body = json.dumps(self.client_json)
             resp.status = falcon.HTTP_400
-        resp.body = json.dumps(self.client_json)
