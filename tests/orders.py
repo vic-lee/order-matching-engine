@@ -3,6 +3,14 @@ import json
 from order_resources import OrderResources
 
 class Orders:
+    def __validate_client_json(self, req):
+        try:
+            self.client_json = json.loads(req.stream.read())
+            return True
+        except ValueError, e:
+            self.client_json = {"Message": "Invalid input"}
+            return False
+
     def on_get(self, req, resp):
         sample_order_resp = {
             "data":
@@ -32,14 +40,9 @@ class Orders:
         resp.status = falcon.HTTP_200
 
     def on_post(self, req, resp):
-        data = json.loads(req.stream.read())
-        if data is not None:
-            output = data
+        validated = self.__validate_client_json(req)
+        if (validated):
             resp.status = falcon.HTTP_200
-            resp.body = json.dumps(output)
         else:
-            output = {
-                "Message": "Please pass in input"
-            }
             resp.status = falcon.HTTP_400
-            resp.body = json.dumps(output)
+        resp.body = json.dumps(self.client_json)
