@@ -37,7 +37,7 @@ class OrderResources:
             if trader_orders is None:
                 self.handle_invalid_trader_order_req(resp)
             else:
-                self.handle_trader_order(resp, trader_orders)
+                self.handle_get_trader_order(resp, trader_orders)
 
     def on_post(self, req, resp):
         validated = self.is_order_valid(req)
@@ -45,7 +45,7 @@ class OrderResources:
             order_time_str = str(datetime.now())
             self.add_time_stamps_to_orders(order_time_str)
             orders_db.add_order(self.client_json)
-            resp.status = falcon.HTTP_200
+            resp.status = falcon.HTTP_201
             resp.body = json.dumps({ "Message": "Post successful" })
         else:
             resp.body = json.dumps(self.client_json)
@@ -66,6 +66,6 @@ class OrderResources:
         resp.body = json.dumps({ "Message": "The trader you requested does not exist"})
         resp.status = falcon.HTTP_404
 
-    def handle_trader_order(self, resp, trader_orders):
+    def handle_get_trader_order(self, resp, trader_orders):
         resp.body = json.dumps(trader_orders)
         resp.status = falcon.HTTP_200
