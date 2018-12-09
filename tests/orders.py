@@ -1,14 +1,10 @@
 import falcon
 import json
 from order_resources import OrderResources
+from orders_spec import trader_id_key, order_key, order_symbol_key, order_quantity_key, order_type_key
 
 class Orders:
     def is_order_valid(self, req):
-        trader_id_key = "traderId"
-        order_key = "orders"
-        order_symbol_key = "symbol"
-        order_quantity_key = "quantity"
-        order_type_key = "orderType"
         try:
             self.client_json = json.loads(req.stream.read())["data"]
             if self.client_json.keys() == [ trader_id_key, order_key ]:
