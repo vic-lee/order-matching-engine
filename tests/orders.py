@@ -3,12 +3,35 @@ import json
 from order_resources import OrderResources
 
 class Orders:
-    def __validate_client_json(self, req):
+    def is_order_valid(self, req):
+        trader_id_key = "traderId"
+        order_key = "orders"
+        order_symbol_key = "symbol"
+        order_quantity_key = "quantity"
+        order_type_key = "orderType"
         try:
-            self.client_json = json.loads(req.stream.read())
+            self.client_json = json.loads(req.stream.read())["data"]
+            if self.client_json.keys() == [ trader_id_key, order_key ]:
+                for item in self.client_json[order_key]:
+                    if item.keys() != [
+                        order_symbol_key,\
+                        order_quantity_key,\
+                        order_type_key\
+                    ]:
+                        error_msg = """order object is missing one of these attributes: symbol, quantity, orderType"""
+                        self.client_json = {
+                            "Message": error_msg
+                        }
+                        return False
+                    else:
+                        continue
+                return True
+            else:
+                self.client_json = {"Message": "Missing key order or traderId" }
+                return False
             return True
         except ValueError, e:
-            self.client_json = {"Message": "Invalid input"}
+            self.client_json = {"Message": "Empty input"}
             return False
 
     def on_get(self, req, resp):
@@ -40,7 +63,7 @@ class Orders:
         resp.status = falcon.HTTP_200
 
     def on_post(self, req, resp):
-        validated = self.__validate_client_json(req)
+        validated = self.is_order_valid(req)
         if (validated):
             resp.status = falcon.HTTP_200
         else:

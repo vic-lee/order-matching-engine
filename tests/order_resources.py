@@ -9,4 +9,8 @@ class OrderResources:
     #           "orderType": String
     #       ]
     # }
-    orders = {}     # dict of each trader's orders
+    def __init__():
+        self.orders = {}
+
+    def add_order(self, order):
+        pass
