@@ -13,17 +13,28 @@ data model for orders, arranged by traders
 }
 """
 
-def trader_id_key():
-    return "traderId"
+trader_id_key = "traderId"
 
-def order_key():
-    return "orders"
+order_key = "orders"
 
-def order_symbol_key():
-    return "symbol"
+order_symbol_key = "symbol"
 
-def order_quantity_key():
-    return "quantity"
+order_quantity_key = "quantity"
 
-def order_type_key():
-    return "orderType"
+order_type_key = "orderType"
+
+
+# def trader_id_key():
+#     return "traderId"
+#
+# def order_key():
+#     return "orders"
+#
+# def order_symbol_key():
+#     return "symbol"
+#
+# def order_quantity_key():
+#     return "quantity"
+#
+# def order_type_key():
+#     return "orderType"

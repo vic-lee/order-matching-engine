@@ -1,19 +1,24 @@
 import falcon
 import json
 from order_resources import OrderResources
-from orders_spec import trader_id_key, order_key, order_symbol_key, order_quantity_key, order_type_key
+from orders_spec import trader_id_key, order_key,\
+    order_symbol_key, order_quantity_key, order_type_key
+
+
+order_resources = OrderResources()
 
 class Orders:
     def is_order_valid(self, req):
         try:
             self.client_json = json.loads(req.stream.read())["data"]
-            if self.client_json.keys() == [ trader_id_key, order_key ]:
+
+            if set(self.client_json.keys()) == { trader_id_key, order_key }:
                 for item in self.client_json[order_key]:
-                    if item.keys() != [
+                    if set(item.keys()) != {
                         order_symbol_key,\
-                        order_quantity_key,\
-                        order_type_key\
-                    ]:
+                        order_type_key,\
+                        order_quantity_key\
+                    }:
                         error_msg = """order object is missing one of these attributes: symbol, quantity, orderType"""
                         self.client_json = {
                             "Message": error_msg
@@ -62,6 +67,7 @@ class Orders:
         validated = self.is_order_valid(req)
         if (validated):
             resp.status = falcon.HTTP_200
+            order_resources.add_order(self.client_json)
         else:
             resp.status = falcon.HTTP_400
         resp.body = json.dumps(self.client_json)
