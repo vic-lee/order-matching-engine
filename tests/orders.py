@@ -6,7 +6,7 @@ from orders_spec import *
 
 orders_db = OrdersDatabase()
 
-class Orders:
+class OrderResources:
     def is_order_valid(self, req):
         try:
             self.client_json = json.loads(req.stream.read())["data"]

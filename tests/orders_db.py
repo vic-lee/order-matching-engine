@@ -1,8 +1,6 @@
-from orders_spec import trader_id_key, order_key,\
-    order_symbol_key, order_quantity_key, order_type_key
+from orders_spec import *
 
 class OrdersDatabase:
-
     """
     `orders` structure:
     orders = {
@@ -37,6 +35,13 @@ class OrdersDatabase:
             self.orders[current_trader_id] = {
                 order_key: []
             }
+
+        for order in new_order[order_key]:
+            matched = self.match_orders(order[order_symbol_key],\
+                order[order_quantity_key], order[order_type_key])
+            if matched:
+                order = self.fill_order(order)
+
         self.orders[current_trader_id][order_key].extend(\
             new_order[order_key])
 
@@ -48,3 +53,27 @@ class OrdersDatabase:
             return None
         else:
             return {"data": self.orders[id][order_key]}
+
+    def match_orders(self, sym, quantity, type):
+        '''
+        There is an order match iff there exists
+        an order in the system that satisfies:
+        1. same symbol
+        2. same quantity (assume no partial fulfillment allowed)
+        3. opposite order type
+        4. status == open
+        '''
+        for trader_id in self.orders:
+            for order in self.orders[trader_id][order_key]:
+                if order[order_symbol_key] == sym and\
+                order[order_quantity_key] == quantity and\
+                order[order_type_key] != type and\
+                order[order_status_key] == order_status_open:
+                    print "we found a match!"
+                    order = self.fill_order(order)
+                    return True
+        return False
+
+    def fill_order(self, order):
+        order[order_status_key] = order_status_filled
+        return order
