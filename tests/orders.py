@@ -1,9 +1,8 @@
 import falcon
 import json
+from datetime import datetime
 from orders_db import OrdersDatabase
-from orders_spec import data_keys, order_keys, trader_id_key, order_key,\
-    order_symbol_key, order_quantity_key, order_type_key
-
+from orders_spec import *
 
 orders_db = OrdersDatabase()
 
@@ -16,7 +15,7 @@ class Orders:
                 return False
             else:
                 for item in self.client_json[order_key]:
-                    if not all(k in item.keys() for k in order_keys):
+                    if not all(k in item.keys() for k in order_keys_on_init):
                         error_msg = """order object is missing one of these attributes: symbol, quantity, orderType"""
                         self.client_json = {
                             "Message": error_msg
@@ -43,12 +42,20 @@ class Orders:
     def on_post(self, req, resp):
         validated = self.is_order_valid(req)
         if (validated):
+            order_time_str = str(datetime.now())
+            self.add_time_stamps_to_orders(order_time_str)
             orders_db.add_order(self.client_json)
             resp.status = falcon.HTTP_200
             resp.body = json.dumps({ "Message": "Post successful" })
         else:
             resp.body = json.dumps(self.client_json)
             resp.status = falcon.HTTP_400
+
+    def add_time_stamps_to_orders(self, time):
+        for order in self.client_json[order_key]:
+            order[order_time_key] = time
+            order[order_status_key] = order_status_open
+        print(self.client_json)
 
     def handle_get_all_orders(self, resp):
         orders_history = orders_db.get_all_orders()

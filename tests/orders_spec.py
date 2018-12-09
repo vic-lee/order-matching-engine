@@ -23,22 +23,16 @@ order_quantity_key = "quantity"
 
 order_type_key = "orderType"
 
+order_time_key = "orderTime"
+
+order_status_key = "status"
+
+order_status_open = "open"
+
+order_status_filled = "filled"
+
 data_keys = [trader_id_key, order_key]
 
-order_keys = [order_symbol_key, order_quantity_key, order_type_key]
+order_keys = [order_symbol_key, order_quantity_key, order_type_key, order_status_key, order_time_key]
 
-
-# def trader_id_key():
-#     return "traderId"
-#
-# def order_key():
-#     return "orders"
-#
-# def order_symbol_key():
-#     return "symbol"
-#
-# def order_quantity_key():
-#     return "quantity"
-#
-# def order_type_key():
-#     return "orderType"
+order_keys_on_init = [order_symbol_key, order_quantity_key, order_type_key]
