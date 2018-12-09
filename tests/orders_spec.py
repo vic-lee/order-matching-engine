@@ -23,6 +23,10 @@ order_quantity_key = "quantity"
 
 order_type_key = "orderType"
 
+data_keys = [trader_id_key, order_key]
+
+order_keys = [order_symbol_key, order_quantity_key, order_type_key]
+
 
 # def trader_id_key():
 #     return "traderId"

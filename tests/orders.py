@@ -1,7 +1,7 @@
 import falcon
 import json
 from orders_db import OrdersDatabase
-from orders_spec import trader_id_key, order_key,\
+from orders_spec import data_keys, order_keys, trader_id_key, order_key,\
     order_symbol_key, order_quantity_key, order_type_key
 
 
@@ -11,14 +11,12 @@ class Orders:
     def is_order_valid(self, req):
         try:
             self.client_json = json.loads(req.stream.read())["data"]
-
-            if set(self.client_json.keys()) == { trader_id_key, order_key }:
+            if not all(k in self.client_json.keys() for k in data_keys):
+                self.client_json = {"Message": "Missing key order or traderId" }
+                return False
+            else:
                 for item in self.client_json[order_key]:
-                    if set(item.keys()) != {
-                        order_symbol_key,\
-                        order_type_key,\
-                        order_quantity_key\
-                    }:
+                    if not all(k in item.keys() for k in order_keys):
                         error_msg = """order object is missing one of these attributes: symbol, quantity, orderType"""
                         self.client_json = {
                             "Message": error_msg
@@ -27,9 +25,6 @@ class Orders:
                     else:
                         continue
                 return True
-            else:
-                self.client_json = {"Message": "Missing key order or traderId" }
-                return False
         except ValueError, e:
             self.client_json = {"Message": "Empty input"}
             return False
@@ -44,7 +39,6 @@ class Orders:
                 self.handle_invalid_trader_order_req(resp)
             else:
                 self.handle_trader_order(resp, trader_orders)
-
 
     def on_post(self, req, resp):
         validated = self.is_order_valid(req)
