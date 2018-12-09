@@ -5,7 +5,7 @@ from orders_spec import trader_id_key, order_key,\
     order_symbol_key, order_quantity_key, order_type_key
 
 
-order_resources = OrderResources()
+orders_db = OrderResources()
 
 class Orders:
     def is_order_valid(self, req):
@@ -36,38 +36,15 @@ class Orders:
             return False
 
     def on_get(self, req, resp):
-        sample_order_resp = {
-            "data":
-            {
-                "traderId": "skbks-sdk39sd-3ksfl43io3-alkjasf-34",
-                "orders":
-                [
-                    {
-                        "symbol": "AAPL",
-                        "quantity": 100,
-                        "orderType": "buy"
-                    },
-                    {
-                        "symbol": "NVDA",
-                        "quantity": 5000,
-                        "orderType": "buy"
-                    },
-                    {
-                        "symbol": "MSFT",
-                        "quantity": 2500,
-                        "orderType": "sell"
-                    }
-                ]
-            }
-        }
-        resp.body = json.dumps(sample_order_resp)
+        orders_history = orders_db.get_all_orders()
+        resp.body = json.dumps(orders_history)
         resp.status = falcon.HTTP_200
 
     def on_post(self, req, resp):
         validated = self.is_order_valid(req)
         if (validated):
             resp.status = falcon.HTTP_200
-            order_resources.add_order(self.client_json)
+            orders_db.add_order(self.client_json)
         else:
             resp.status = falcon.HTTP_400
         resp.body = json.dumps(self.client_json)

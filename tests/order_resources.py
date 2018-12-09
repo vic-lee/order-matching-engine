@@ -37,5 +37,6 @@ class OrderResources:
             }
         self.orders[current_trader_id][order_key].extend(\
             new_order[order_key])
-        print self.orders
-        print(self.orders[current_trader_id])
+
+    def get_all_orders(self):
+        return self.orders;
