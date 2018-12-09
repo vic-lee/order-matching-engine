@@ -6,8 +6,8 @@ Before you submit the project, please test it inside the docker container and ma
 ## Setup
 1) Install and setup docker (https://docs.docker.com/install/)
 2) **Optional:** If you would like to develop locally rather than use the docker container for development you will need to setup a python 3.6 environment (https://www.python.org/downloads/release/python-360/).
-3) **Optional:** If you would like to use an IDE for python we recommend pycharm (https://www.jetbrains.com/pycharm/download/) 
-4) **Optional:** If you would like to use a tool other than cURL for testing your API we recommend Postman (https://www.getpostman.com/apps) 
+3) **Optional:** If you would like to use an IDE for python we recommend pycharm (https://www.jetbrains.com/pycharm/download/)
+4) **Optional:** If you would like to use a tool other than cURL for testing your API we recommend Postman (https://www.getpostman.com/apps)
 
 ## Hello World Health Check
 Included with this readme are a few base files to help you get started:
@@ -25,7 +25,7 @@ The last line should output something like: "Successfully build <image_id>". If 
 Once you have an image_id you can run `docker run -d -p 8080:8080 <image_id>`. If the container starts up successfully you should be able to go to 127.0.0.1:8080/health
 
 #### Questions:
-1) What are the -d and -p flags passed into the `docker run` command? 
+1) What are the -d and -p flags passed into the `docker run` command?
 2) In the /health endpoint there is a hostname attribute. What does that hostname represent?
 
 
@@ -65,7 +65,7 @@ Here is a link if you want more information: https://en.wikipedia.org/wiki/Order
         }
     }
     ```
-   
+
 2) Create an endpoint to view a given trader's current orders and statuses (/orders/<trader_id>). The data model for that should look something like this:
     ```json
     {
@@ -95,7 +95,7 @@ Here is a link if you want more information: https://en.wikipedia.org/wiki/Order
         ]
     }
     ```
-    
+
 3) Write matching logic to match buy and sell orders. Here is some sample input/output:
 
     Trader 1 sends in an order like this:
@@ -115,7 +115,7 @@ Here is a link if you want more information: https://en.wikipedia.org/wiki/Order
         }
     }
     ```
-    
+
     Then if you hit `/orders/trader1` it should return:
     ```json
     {
@@ -131,7 +131,7 @@ Here is a link if you want more information: https://en.wikipedia.org/wiki/Order
         ]
     }
     ```
-    
+
     And then if Trader 2 sends in something like this:
     ```json
     {
@@ -149,7 +149,7 @@ Here is a link if you want more information: https://en.wikipedia.org/wiki/Order
         }
     }
     ```
-    
+
     and `/orders/trader1` should now look something like this:
     ```json
     {
@@ -165,7 +165,7 @@ Here is a link if you want more information: https://en.wikipedia.org/wiki/Order
         ]
     }
     ```
-    
+
     and `/orders/trader2` should look like this:
     ```json
     {
@@ -181,4 +181,3 @@ Here is a link if you want more information: https://en.wikipedia.org/wiki/Order
         ]
     }
     ```
-    

@@ -35,9 +35,20 @@ class Orders:
             return False
 
     def on_get(self, req, resp):
-        orders_history = orders_db.get_all_orders()
-        resp.body = json.dumps(orders_history)
-        resp.status = falcon.HTTP_200
+        req_trader_id = req.get_param("trader_id")
+        if (req_trader_id is None):
+            orders_history = orders_db.get_all_orders()
+            resp.body = json.dumps(orders_history)
+            resp.status = falcon.HTTP_200
+        else:
+            trader_orders = orders_db.get_trader_order(req_trader_id)
+            if trader_orders is None:
+                resp.body = json.dumps({ "Message": "The trader you requested does not exist"})
+                resp.status = falcon.HTTP_404
+            else:
+                resp.body = json.dumps(trader_orders)
+                resp.status = falcon.HTTP_200
+
 
     def on_post(self, req, resp):
         validated = self.is_order_valid(req)

@@ -24,6 +24,8 @@ class OrdersDatabase:
 
     Query a trader by searching for keys in `orders`.
     If key doesn't exist, create a new traderId key-value pair.
+
+    Note that `orders` is reset every time the API is restarted.
     """
 
     def __init__(self):
@@ -39,4 +41,10 @@ class OrdersDatabase:
             new_order[order_key])
 
     def get_all_orders(self):
-        return self.orders;
+        return self.orders
+
+    def get_trader_order(self, id):
+        if id not in self.orders:
+            return None
+        else:
+            return {"data": self.orders[id][order_key]}
