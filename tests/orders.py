@@ -37,17 +37,13 @@ class Orders:
     def on_get(self, req, resp):
         req_trader_id = req.get_param("trader_id")
         if (req_trader_id is None):
-            orders_history = orders_db.get_all_orders()
-            resp.body = json.dumps(orders_history)
-            resp.status = falcon.HTTP_200
+            self.handle_get_all_orders(resp)
         else:
             trader_orders = orders_db.get_trader_order(req_trader_id)
             if trader_orders is None:
-                resp.body = json.dumps({ "Message": "The trader you requested does not exist"})
-                resp.status = falcon.HTTP_404
+                self.handle_invalid_trader_order_req(resp)
             else:
-                resp.body = json.dumps(trader_orders)
-                resp.status = falcon.HTTP_200
+                self.handle_trader_order(resp, trader_orders)
 
 
     def on_post(self, req, resp):
@@ -59,3 +55,16 @@ class Orders:
         else:
             resp.body = json.dumps(self.client_json)
             resp.status = falcon.HTTP_400
+
+    def handle_get_all_orders(self, resp):
+        orders_history = orders_db.get_all_orders()
+        resp.body = json.dumps(orders_history)
+        resp.status = falcon.HTTP_200
+
+    def handle_invalid_trader_order_req(self, resp):
+        resp.body = json.dumps({ "Message": "The trader you requested does not exist"})
+        resp.status = falcon.HTTP_404
+
+    def handle_trader_order(self, resp, trader_orders):
+        resp.body = json.dumps(trader_orders)
+        resp.status = falcon.HTTP_200
