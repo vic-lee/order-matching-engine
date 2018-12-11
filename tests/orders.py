@@ -17,24 +17,19 @@ class OrderResources:
         try:
             self.client_json = json.loads(req.stream.read())["data"]
             if not all(k in self.client_json.keys() for k in data_keys):
-                raise JsonKeyError
+                raise JsonKeyError("Missing key order or traderId")
             else:
                 for item in self.client_json[order_key]:
                     if not all(k in item.keys() for k in order_keys_on_init):
-                        raise OrderKeyError
+                        raise OrderKeyError("order object is missing one of these attributes: symbol, quantity, orderType")
                     else:
                         continue
                 return True
         except JsonKeyError, e:
-            self.client_json = {
-                "Message": "Missing key order or traderId"
-            }
+            self.client_json = { "Message": str(e) }
             return False
         except OrderKeyError, e:
-            error_msg = """order object is missing one of these attributes: symbol, quantity, orderType"""
-            self.client_json = {
-                "Message": error_msg
-            }
+            self.client_json = { "Message": str(e) }
             return False
         except ValueError, e:
             self.client_json = {"Message": "Empty input"}
