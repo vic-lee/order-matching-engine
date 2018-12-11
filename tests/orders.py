@@ -9,6 +9,9 @@ orders_db = OrdersDatabase()
 class JsonKeyError(Exception):
     pass
 
+class OrderKeyError(Exception):
+    pass
+
 class OrderResources:
     def is_order_valid(self, req):
         try:
@@ -18,17 +21,19 @@ class OrderResources:
             else:
                 for item in self.client_json[order_key]:
                     if not all(k in item.keys() for k in order_keys_on_init):
-                        error_msg = """order object is missing one of these attributes: symbol, quantity, orderType"""
-                        self.client_json = {
-                            "Message": error_msg
-                        }
-                        return False
+                        raise OrderKeyError
                     else:
                         continue
                 return True
         except JsonKeyError, e:
             self.client_json = {
                 "Message": "Missing key order or traderId"
+            }
+            return False
+        except OrderKeyError, e:
+            error_msg = """order object is missing one of these attributes: symbol, quantity, orderType"""
+            self.client_json = {
+                "Message": error_msg
             }
             return False
         except ValueError, e:
