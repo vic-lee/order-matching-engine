@@ -6,13 +6,15 @@ from orders_spec import *
 
 orders_db = OrdersDatabase()
 
+class JsonKeyError(Exception):
+    pass
+
 class OrderResources:
     def is_order_valid(self, req):
         try:
             self.client_json = json.loads(req.stream.read())["data"]
             if not all(k in self.client_json.keys() for k in data_keys):
-                self.client_json = {"Message": "Missing key order or traderId" }
-                return False
+                raise JsonKeyError
             else:
                 for item in self.client_json[order_key]:
                     if not all(k in item.keys() for k in order_keys_on_init):
@@ -24,6 +26,11 @@ class OrderResources:
                     else:
                         continue
                 return True
+        except JsonKeyError, e:
+            self.client_json = {
+                "Message": "Missing key order or traderId"
+            }
+            return False
         except ValueError, e:
             self.client_json = {"Message": "Empty input"}
             return False
@@ -63,7 +70,9 @@ class OrderResources:
         resp.status = falcon.HTTP_200
 
     def handle_invalid_trader_order_req(self, resp):
-        resp.body = json.dumps({ "Message": "The trader you requested does not exist"})
+        resp.body = json.dumps({
+            "Message": "The trader you requested does not exist"
+        })
         resp.status = falcon.HTTP_404
 
     def handle_get_trader_order(self, resp, trader_orders):
