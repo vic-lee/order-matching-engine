@@ -1,6 +1,6 @@
 import falcon
 from health_check import HealthCheck
-from orders import OrderResources
+from orders.orders import OrderResources
 
 APP = falcon.API()
 

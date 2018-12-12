@@ -1,8 +1,8 @@
 import falcon
 import json
 from datetime import datetime
-from orders_db import OrdersDatabase
-from orders_spec import *
+from orders.orders_db import OrdersDatabase
+from orders.orders_spec import *
 
 orders_db = OrdersDatabase()
 
