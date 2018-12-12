@@ -11,24 +11,24 @@ class Error(Exception):
 
 class JsonKeyError(Error):
     def __init__(self):
-        self.message = "Missing key order or traderId"
+        self.message = "Your data object is missing key `order` or `traderId`"
 
 class OrderKeyError(Error):
     def __init__(self):
-        self.message = "order object is missing one of these attributes: symbol, quantity, orderType"
+        self.message = "Order object is missing one of these attributes: "+\
+                        "symbol, quantity, orderType"
 
 class OrderResources:
     def is_order_valid(self, req):
         try:
             self.client_json = json.loads(req.stream.read())["data"]
             if not all(k in self.client_json.keys() for k in data_keys):
-                raise JsonKeyError()
-            else:
-                for item in self.client_json[order_key]:
-                    if not all(k in item.keys() for k in order_keys_on_init):
-                        raise OrderKeyError()
-                    else:
-                        continue
+                raise JsonKeyError
+            for item in self.client_json[order_key]:
+                if not all(k in item.keys() for k in order_keys_on_init):
+                    raise OrderKeyError
+                else:
+                    continue
                 return True
         except JsonKeyError as e:
             self.client_json = { "Message": e.message }
