@@ -1,4 +1,5 @@
-from orders.orders_spec import *
+# from orders.orders_spec import *
+import orders.orders_spec as spec
 
 class OrdersDatabase:
     """
@@ -30,20 +31,20 @@ class OrdersDatabase:
         self.orders = {}
 
     def add_order(self, new_order):
-        current_trader_id = new_order[trader_id_key]
+        current_trader_id = new_order[spec.trader_id_key]
         if current_trader_id not in self.orders:
             self.orders[current_trader_id] = {
-                order_key: []
+                spec.order_key: []
             }
 
-        for order in new_order[order_key]:
-            matched = self.match_orders(order[order_symbol_key],\
-                order[order_quantity_key], order[order_type_key])
+        for order in new_order[spec.order_key]:
+            matched = self.match_orders(order[spec.order_symbol_key],\
+                order[spec.order_quantity_key], order[spec.order_type_key])
             if matched:
                 order = self.fill_order(order)
 
-        self.orders[current_trader_id][order_key].extend(\
-            new_order[order_key])
+        self.orders[current_trader_id][spec.order_key].extend(\
+            new_order[spec.order_key])
 
     def get_all_orders(self):
         return self.orders
@@ -52,7 +53,7 @@ class OrdersDatabase:
         if id not in self.orders:
             return None
         else:
-            return {"data": self.orders[id][order_key]}
+            return {"data": self.orders[id][spec.order_key]}
 
     def match_orders(self, sym, quantity, type):
         '''
@@ -64,16 +65,16 @@ class OrdersDatabase:
         4. status == open
         '''
         for trader_id in self.orders:
-            for order in self.orders[trader_id][order_key]:
-                if order[order_symbol_key] == sym and\
-                order[order_quantity_key] == quantity and\
-                order[order_type_key] != type and\
-                order[order_status_key] == order_status_open:
+            for order in self.orders[trader_id][spec.order_key]:
+                if order[spec.order_symbol_key] == sym and\
+                order[spec.order_quantity_key] == quantity and\
+                order[spec.order_type_key] != type and\
+                order[spec.order_status_key] == spec.order_status_open:
                     print("we found a match!")
                     order = self.fill_order(order)
                     return True
         return False
 
     def fill_order(self, order):
-        order[order_status_key] = order_status_filled
+        order[spec.order_status_key] = spec.order_status_filled
         return order

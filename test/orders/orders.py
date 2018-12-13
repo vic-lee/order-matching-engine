@@ -2,7 +2,8 @@ import falcon
 import json
 from datetime import datetime
 from orders.orders_db import OrdersDatabase
-from orders.orders_spec import *
+# from orders.orders_spec import *
+import orders.orders_spec as spec
 
 orders_db = OrdersDatabase()
 
@@ -22,10 +23,10 @@ class OrderResources:
     def is_order_valid(self, req):
         try:
             self.client_json = json.loads(req.stream.read())["data"]
-            if not all(k in self.client_json.keys() for k in data_keys):
+            if not all(k in self.client_json.keys() for k in spec.data_keys):
                 raise JsonKeyError
-            for item in self.client_json[order_key]:
-                if not all(k in item.keys() for k in order_keys_on_init):
+            for item in self.client_json[spec.order_key]:
+                if not all(k in item.keys() for k in spec.order_keys_on_init):
                     raise OrderKeyError
                 else:
                     continue
@@ -64,7 +65,7 @@ class OrderResources:
             resp.status = falcon.HTTP_400
 
     def add_time_stamps_to_orders(self, time):
-        for order in self.client_json[order_key]:
+        for order in self.client_json[spec.order_key]:
             order[order_time_key] = time
             order[order_status_key] = order_status_open
         print(self.client_json)
