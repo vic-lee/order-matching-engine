@@ -38,15 +38,14 @@ class TestOrders(TestBase):
     def test_order_matching(self):
         pass
 
-    def get_order_test_handler(self, payload, trader_id):
+    def get_order_test_handler(self, payload, trader_id=None):
         self.simulate_post('/orders', json=payload)
-        print(payload)
         if trader_id == None:
             self.handle_get_all_orders()
         else:
             self.handle_get_trader_order(trader_id, payload[spec.data_key][spec.order_key])
 
-    def handle_get_trader_order(self, trader_id, db_data):
+    def handle_get_trader_order(self, trader_id, data_sent):
         param = {"trader_id": trader_id}
         result = self.simulate_get(self.order_endpoint, params=param)
         resp = result.json
@@ -55,13 +54,12 @@ class TestOrders(TestBase):
             self.assertIn(spec.order_symbol_key, order)
             self.assertIn(spec.order_quantity_key, order)
             self.assertIn(spec.order_type_key, order)
-            pass
-            # order_on_init = {
-            #     spec.order_symbol_key: order[spec.order_symbol_key],
-            #     spec.order_quantity_key: order[spec.order_quantity_key],
-            #     spec.order_type_key: order[spec.order_type_key],
-            # }
-            # self.assertEqual(order, order_on_init)
+            server_order_init_format = {
+                spec.order_symbol_key: order[spec.order_symbol_key],
+                spec.order_quantity_key: order[spec.order_quantity_key],
+                spec.order_type_key: order[spec.order_type_key],
+            }
+            self.assertIn(server_order_init_format, data_sent)
 
     def handle_get_all_trade_order(self):
         result = self.simulate_get(self.order_endpoint)
