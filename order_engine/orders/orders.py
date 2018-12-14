@@ -47,7 +47,8 @@ class OrderResources:
                     raise OrderKeyError
                 elif item[spec.order_type_key] not in spec.order_type_states:
                     raise OrderAttributeError("`OrderType`")
-                elif isinstance(item[spec.order_quantity_key], str) and item[spec.order_quantity_key].isdigit():
+                elif isinstance(item[spec.order_quantity_key], str)\
+                    and item[spec.order_quantity_key].isdigit():
                     raise OrderAttributeError("`Quantity`")
                 else:
                     continue
