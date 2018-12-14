@@ -1,3 +1,8 @@
+'''
+This file contains the OrderResources class that handles
+API requests related to orders.
+'''
+
 import falcon
 import json
 from datetime import datetime
@@ -21,7 +26,6 @@ class OrderKeyError(Error):
 class OrderResources:
     def is_order_valid(self, req):
         try:
-            # self.client_json = json.loads(req.stream.read())["data"]
             self.client_json = json.loads(req.stream.read())
             if "data" not in self.client_json:
                 raise JsonKeyError
