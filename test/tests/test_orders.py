@@ -15,6 +15,18 @@ class TestOrders(TestBase):
 
     order_endpoint = '/orders'
 
+    def assertOrderExists(self, order_sent, server_orders):
+        order_list = []
+        for order in server_orders:
+            server_order_init_format = {
+                spec.order_symbol_key: order[spec.order_symbol_key],
+                spec.order_quantity_key: order[spec.order_quantity_key],
+                spec.order_type_key: order[spec.order_type_key],
+            }
+            order_list.append(server_order_init_format)
+        if order_sent not in order_list:
+            raise AssertionError("Order " + str(order_sent) + " is not found on server")
+
     def test_get_message(self):
         result = self.simulate_get('/orders')
         # for individual_resp in resp:
@@ -39,7 +51,11 @@ class TestOrders(TestBase):
         pass
 
     def get_order_test_handler(self, payload, trader_id=None):
-        self.simulate_post('/orders', json=payload)
+        if (type(payload) == list):
+            for p in payload:
+                self.simulate_post('/orders', json=p)
+        else:
+            self.simulate_post('/orders', json=payload)
         if trader_id == None:
             self.handle_get_all_orders()
         else:
@@ -50,20 +66,18 @@ class TestOrders(TestBase):
         result = self.simulate_get(self.order_endpoint, params=param)
         resp = result.json
         self.assertIn(spec.data_key, resp)
-        for order in resp[spec.data_key]:
-            self.assertIn(spec.order_symbol_key, order)
-            self.assertIn(spec.order_quantity_key, order)
-            self.assertIn(spec.order_type_key, order)
-            server_order_init_format = {
-                spec.order_symbol_key: order[spec.order_symbol_key],
-                spec.order_quantity_key: order[spec.order_quantity_key],
-                spec.order_type_key: order[spec.order_type_key],
-            }
-            self.assertIn(server_order_init_format, data_sent)
+        for order in data_sent:
+            self.assertOrderExists(order, resp[spec.data_key])
 
-    def handle_get_all_trade_order(self):
+    def handle_get_all_trade_order(self, data_sent):
         result = self.simulate_get(self.order_endpoint)
-
+        resp = result.json
+        if spec.data_key not in resp:
+            '''Expect getting order data from multiple traders'''
+        else:
+            '''Expect getting data from one trading account'''
+            for order_item in data_sent:
+                self.assertOrderExists(order_item, resp[spec.data_key])
 
     def post_order_test_handler(self, payload, test_type):
         result = self.simulate_post('/orders', json=payload)
