@@ -20,15 +20,20 @@ class TestOrderCreation(TestOrders):
 
     def test_post_order(self):
         self.post_order_test_handler(testdata.std_post_data, testdata.std_post)
+        self.post_order_test_handler(testdata.wrong_json_format_post_data, testdata.wrong_json_format_post)
 
     def post_order_test_handler(self, payload, test_type):
         result = self.simulate_post('/orders', json=payload)
         resp = result.json
-
         if test_type == testdata.std_post:
             assert "Message" in resp
             assert "Post successful" in resp["Message"]
             assert falcon.HTTP_201 == result.status
+        elif test_type == testdata.wrong_json_format_post:
+            assert "Message" in resp
+            assert "Your data object is missing key `order` or `traderId`" in resp["Message"]
+            assert falcon.HTTP_400 == result.status
+        elif 
 
 # if __name__ == "__main__":
 #     unittest.main()

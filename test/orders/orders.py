@@ -22,7 +22,11 @@ class OrderKeyError(Error):
 class OrderResources:
     def is_order_valid(self, req):
         try:
-            self.client_json = json.loads(req.stream.read())["data"]
+            # self.client_json = json.loads(req.stream.read())["data"]
+            self.client_json = json.loads(req.stream.read())
+            if "data" not in self.client_json:
+                raise JsonKeyError
+            self.client_json = self.client_json["data"]
             if not all(k in self.client_json.keys() for k in spec.data_keys):
                 raise JsonKeyError
             for item in self.client_json[spec.order_key]:
