@@ -22,3 +22,7 @@ std_post_data = {
         ]
     }
 }
+
+std_post = "STANDARD_POST_TEST"
+wrong_json_format_post = "WORNG_JSON_FORMAT_POST"
+non_numerical_quantity_post = "NON_NUMERICAL_QUANTITY_POST"

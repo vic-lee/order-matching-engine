@@ -19,13 +19,16 @@ class TestOrderCreation(TestOrders):
 
 
     def test_post_order(self):
-        docs = testdata.std_post_data
-        result = self.simulate_post('/orders', json=docs)
+        self.post_order_test_handler(testdata.std_post_data, testdata.std_post)
+
+    def post_order_test_handler(self, payload, test_type):
+        result = self.simulate_post('/orders', json=payload)
         resp = result.json
 
-        assert "Message" in resp
-        assert "Post successful" in resp["Message"]
-        assert falcon.HTTP_201 == result.status
+        if test_type == testdata.std_post:
+            assert "Message" in resp
+            assert "Post successful" in resp["Message"]
+            assert falcon.HTTP_201 == result.status
 
 # if __name__ == "__main__":
 #     unittest.main()
