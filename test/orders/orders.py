@@ -62,7 +62,9 @@ class OrderResources:
             self.add_time_stamps_to_orders(order_time_str)
             orders_db.add_order(self.client_json)
             resp.status = falcon.HTTP_201
-            resp.body = json.dumps({ spec.resp_msg_key : spec.post_success_resp_msg })
+            resp.body = json.dumps({
+                spec.resp_msg_key : spec.post_success_resp_msg
+            })
         else:
             resp.body = json.dumps(self.client_json)
             resp.status = falcon.HTTP_400
@@ -71,12 +73,14 @@ class OrderResources:
         for order in self.client_json[spec.order_key]:
             order[spec.order_time_key] = time
             order[spec.order_status_key] = spec.order_status_open
-        # print(self.client_json)
 
     def handle_get_all_orders(self, resp):
         orders_history = orders_db.get_all_orders()
-        resp.body = json.dumps(orders_history)
-        resp.status = falcon.HTTP_200
+        if orders_history == {}:
+            resp.status = falcon.HTTP_204
+        else:
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(orders_history)
 
     def handle_invalid_trader_order_req(self, resp):
         resp.body = json.dumps({

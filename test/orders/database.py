@@ -52,8 +52,6 @@ class OrdersDatabase:
             new_order[spec.order_key])
 
     def get_all_orders(self):
-        if (self.orders == {}):
-            return {"Message": "No order"}
         return self.orders
 
     def get_trader_order(self, id):
@@ -77,7 +75,6 @@ class OrdersDatabase:
                 order[spec.order_quantity_key] == quantity and\
                 order[spec.order_type_key] != type and\
                 order[spec.order_status_key] == spec.order_status_open:
-                    print("we found a match!")
                     order = self.fill_order(order)
                     return True
         return False

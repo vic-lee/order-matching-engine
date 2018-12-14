@@ -28,7 +28,8 @@ class TestOrdersGet(TestOrders):
         if trader_id == None:
             self.handle_get_all_trade_orders(payload)
         else:
-            self.handle_get_trader_order(trader_id, payload[spec.data_key][spec.order_key])
+            self.handle_get_trader_order(trader_id, \
+                payload[spec.data_key][spec.order_key])
 
 
     def handle_get_trader_order(self, trader_id, data_sent):

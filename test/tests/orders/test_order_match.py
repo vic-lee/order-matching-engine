@@ -9,17 +9,14 @@ class TestOrdersMatching(TestOrders):
         self.order_matching_test_handler(testdata.order_matching_data)
 
     def order_matching_test_handler(self, payload):
-        """
-        Edge case warning: if any order in order_matching_data has a
-        matching order from previous tests, the matching engine may
-        fill that order instead of the one tested hereself.
-        For better testability, consider data from API before this test.
-        """
         for p in payload:
             self.simulate_post(self.order_endpoint, json=p)
+
         result = self.simulate_get(self.order_endpoint)
         resp = result.json
+
         self.assertEqual(falcon.HTTP_200, result.status)
+
         for p in payload:
             trader_id = p[spec.data_key][spec.trader_id_key]
             self.assertEqual(spec.order_status_filled,\

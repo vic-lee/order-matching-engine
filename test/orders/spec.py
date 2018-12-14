@@ -32,6 +32,7 @@ order_keys = [\
 order_keys_on_init = [order_symbol_key, order_quantity_key, order_type_key]
 
 resp_msg_key = "Message"
+empty_db_msg = "No order"
 post_success_resp_msg = "Post successful"
 post_json_missing_key_err_msg = "Your data object is missing key `order` or `traderId`"
 req_trader_missing_err_msg = "The trader you requested does not exist"
