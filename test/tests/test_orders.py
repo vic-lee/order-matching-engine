@@ -83,13 +83,13 @@ class TestOrders(TestBase):
         result = self.simulate_post('/orders', json=payload)
         resp = result.json
         if test_type == testdata.std_post:
-            assert spec.resp_msg_key in resp
-            assert spec.post_success_resp_msg in resp["Message"]
-            assert falcon.HTTP_201 == result.status
+            self.assertIn(spec.resp_msg_key, resp)
+            self.assertIn(spec.post_success_resp_msg, resp["Message"])
+            self.assertEqual(falcon.HTTP_201, result.status)
         elif test_type == testdata.wrong_json_format_post:
-            assert spec.resp_msg_key in resp
-            assert spec.post_json_missing_key_err_msg in resp["Message"]
-            assert falcon.HTTP_400 == result.status
+            self.assertIn(spec.resp_msg_key, resp)
+            self.assertEqual(spec.post_json_missing_key_err_msg, resp["Message"])
+            self.assertEqual(falcon.HTTP_400, result.status)
         elif test_type == testdata.non_numerical_quantity_post:
             pass
 
