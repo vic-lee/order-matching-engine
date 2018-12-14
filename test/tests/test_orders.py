@@ -1,8 +1,9 @@
 import unittest
 import json
-from falcon import testing
-import app
+from falcon import testing, falcon
 
+import app
+import tests.test_orders_data as testdata
 
 class TestOrders(testing.TestCase):
     def setUp(self):
@@ -18,35 +19,13 @@ class TestOrderCreation(TestOrders):
 
 
     def test_post_order(self):
-        docs = {
-            "data":
-            {
-                "traderId": "skbks-sdk39sd-3ksfl43io3-alkjasf-34",
-                "orders":
-                [
-                    {
-                        "symbol": "AAPL",
-                        "quantity": 100,
-                        "orderType": "buy"
-                    },
-                    {
-                        "symbol": "NVDA",
-                        "quantity": 5000,
-                        "orderType": "buy"
-                    },
-                    {
-                        "symbol": "MSFT",
-                        "quantity": 2500,
-                        "orderType": "sell"
-                    }
-                ]
-            }
-        }
-        headers = {"Content-Type": "application/json"}
+        docs = testdata.std_post_data
         result = self.simulate_post('/orders', json=docs)
         resp = result.json
+
         assert "Message" in resp
         assert "Post successful" in resp["Message"]
+        assert falcon.HTTP_201 == result.status
 
 # if __name__ == "__main__":
 #     unittest.main()
