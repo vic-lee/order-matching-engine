@@ -7,13 +7,10 @@ import tests.test_orders_data as testdata
 import orders.spec as spec
 
 class TestBase(testing.TestCase):
+
     def setUp(self):
         super(TestBase, self).setUp()
         self.app = app.create()
-
-class TestOrders(TestBase):
-
-    order_endpoint = '/orders'
 
     def assertOrderExists(self, order_sent, server_orders):
         order_list = []
@@ -26,6 +23,10 @@ class TestOrders(TestBase):
             order_list.append(server_order_init_format)
         if order_sent not in order_list:
             raise AssertionError("Order " + str(order_sent) + " is not found on server")
+
+class TestOrders(TestBase):
+
+    order_endpoint = '/orders'
 
     def test_get_message(self):
         result = self.simulate_get('/orders')
