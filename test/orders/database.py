@@ -52,6 +52,8 @@ class OrdersDatabase:
             new_order[spec.order_key])
 
     def get_all_orders(self):
+        if (self.orders == {}):
+            return {"Message": "No order"}
         return self.orders
 
     def get_trader_order(self, id):
