@@ -4,7 +4,6 @@ from datetime import datetime
 from orders.database import OrdersDatabase
 import orders.spec as spec
 
-
 orders_db = OrdersDatabase()
 
 class Error(Exception):
