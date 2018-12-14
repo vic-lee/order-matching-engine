@@ -30,7 +30,7 @@ class OrderResources:
                     raise OrderKeyError
                 else:
                     continue
-                return True
+            return True
         except JsonKeyError as e:
             self.client_json = { "Message": e.message }
             return False
@@ -66,8 +66,8 @@ class OrderResources:
 
     def add_time_stamps_to_orders(self, time):
         for order in self.client_json[spec.order_key]:
-            order[order_time_key] = time
-            order[order_status_key] = order_status_open
+            order[spec.order_time_key] = time
+            order[spec.order_status_key] = spec.order_status_open
         print(self.client_json)
 
     def handle_get_all_orders(self, resp):

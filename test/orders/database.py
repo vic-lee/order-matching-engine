@@ -1,3 +1,9 @@
+'''
+This is a pseudo database that houses API data on post.
+
+Presumably this module would be replaced by a service
+that connects to a real database.
+'''
 import orders.spec as spec
 
 class OrdersDatabase:

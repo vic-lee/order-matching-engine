@@ -9,3 +9,6 @@ order_resources = OrderResources()
 
 APP.add_route('/health', health_check_resource)
 APP.add_route('/orders', order_resources)
+
+def create():
+    return falcon.API()
