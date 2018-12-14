@@ -46,7 +46,7 @@ The following table lists all endpoints available.
 ## Testing the APIs
 
 
-The tests of this program is written using python's `unittest` framework. Tests on GET, POST, and the matching process are written. `test_order_classes.py` defines the base test class for testing orders. `test_order_data.py` contains test data for different test cases in test files.
+The tests of this program is written using python's `unittest` framework. Tests on GET, POST, and the matching process are written. Specifically, `test_order_classes.py` defines the base test class for testing orders. `test_order_data.py` contains test data for different test cases in test files. The other `test_order_*` files are test files.
 
 The structure of the tests is reproduced below:
 
@@ -71,15 +71,15 @@ To run a test, run the following commands:
 
 ### On handler functions
 
-Each test file contains `*_handler` functions that handles each test case. For instance, the following code snippet in `test_order_get.py` tests if the API successfully returns orders associated with a trader ID:
+Each test file contains `*_handler` functions that handles each test case. For instance, the following code snippet in `test_order_get.py` calls `get_order_test_handler` to test if the API successfully returns orders associated with a trader ID:
 
 ```python
 payload = testdata.std_post_data
 tid = testdata.std_post_data[spec.data_key][spec.trader_id_key]
-self.get_order_test_handler(payload=payload, trader_id = tid)
+self.get_order_test_handler(payload=payload, trader_id=tid)
 ```
 
-`*_handler` functions are essentially wrapper functions that I've created to make each test case more readable. Each `*_handler` function call is a test case. Since `*_handler` functions are only called in `test_*` functions, the list of `*_handler` functions called represent all the test cases. The arguments passed in each call should make test cases understandable without much documentation.
+`*_handler` functions are essentially wrapper functions on various assert statements that I've created to make each test case more readable. Each `*_handler` function call is a test case. Since `*_handler` functions are only called in `test_*` functions, the list of `*_handler` functions called represent all the test cases.
 
 ### Test cases
 - tests on `GET`
@@ -106,7 +106,7 @@ Since I'm not sure if "partially filled order" is a term that is used in practic
   - orders result
     - order (id=1) closed
     - order (id=2) closed
-    - order (id=3) breaks into 2 orders:
+    - order (id=3) partitioned into 2 orders:
       - order (id=3.1): sell 70 AAPL shares, filled
       - order (id=3.2): sell 20 AAPL shares, open
 ```
