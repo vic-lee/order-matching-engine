@@ -23,8 +23,18 @@ class OrderKeyError(Error):
         self.message = "Order object is missing one of these attributes: "+\
                         "symbol, quantity, orderType"
 
+class OrderAttributeError(Error):
+    def __init__(self, error):
+        self.message = "Attribute " + error + " has an error data type."
+
 class OrderResources:
     def is_order_valid(self, req):
+        '''A response body is valid iff:
+        1. data is wrapped in a "data" key-value pair
+        2. there exists key `traderId` and `orders` in data's value
+        3. orders in `order` have keys `symbol`, `quantity`, `orderType`
+        4. `orderType` should be buy | sell, `quantity` should be a number
+        '''
         try:
             self.client_json = json.loads(req.stream.read())
             if "data" not in self.client_json:
@@ -35,6 +45,10 @@ class OrderResources:
             for item in self.client_json[spec.order_key]:
                 if not all(k in item.keys() for k in spec.order_keys_on_init):
                     raise OrderKeyError
+                elif item[spec.order_type_key] not in spec.order_type_states:
+                    raise OrderAttributeError("`OrderType`")
+                elif isinstance(item[spec.order_quantity_key], str) and item[spec.order_quantity_key].isdigit():
+                    raise OrderAttributeError("`Quantity`")
                 else:
                     continue
             return True
@@ -42,6 +56,9 @@ class OrderResources:
             self.client_json = { "Message": e.message }
             return False
         except OrderKeyError as e:
+            self.client_json = { "Message": e.message }
+            return False
+        except OrderAttributeError as e:
             self.client_json = { "Message": e.message }
             return False
         except ValueError:
