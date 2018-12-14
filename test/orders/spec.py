@@ -13,6 +13,7 @@ data model for orders, arranged by traders
 }
 """
 
+data_key = "data"
 trader_id_key = "traderId"
 order_key = "orders"
 order_symbol_key = "symbol"
