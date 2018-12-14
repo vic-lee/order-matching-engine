@@ -45,7 +45,11 @@ class TestOrders(TestBase):
         self.get_order_test_handler(\
             testdata.std_post_data,\
             testdata.std_post_data[spec.data_key][spec.trader_id_key])
-        pass
+
+        multiple_post_payload = [testdata.std_post_data,\
+            testdata.std_post_data_2, testdata.std_post_data_3]
+
+        self.get_order_test_handler(multiple_post_payload)
 
     def test_order_matching(self):
         pass
@@ -57,7 +61,7 @@ class TestOrders(TestBase):
         else:
             self.simulate_post('/orders', json=payload)
         if trader_id == None:
-            self.handle_get_all_orders()
+            self.handle_get_all_trade_orders(payload)
         else:
             self.handle_get_trader_order(trader_id, payload[spec.data_key][spec.order_key])
 
@@ -69,11 +73,16 @@ class TestOrders(TestBase):
         for order in data_sent:
             self.assertOrderExists(order, resp[spec.data_key])
 
-    def handle_get_all_trade_order(self, data_sent):
+    def handle_get_all_trade_orders(self, data_sent):
         result = self.simulate_get(self.order_endpoint)
         resp = result.json
+
         if spec.data_key not in resp:
             '''Expect getting order data from multiple traders'''
+            for payload in data_sent:
+                trader_id = payload[spec.data_key][spec.trader_id_key]
+                for order in payload[spec.data_key][spec.order_key]:
+                    self.assertOrderExists(order, resp[trader_id][spec.order_key])
         else:
             '''Expect getting data from one trading account'''
             for order_item in data_sent:
@@ -82,14 +91,17 @@ class TestOrders(TestBase):
     def post_order_test_handler(self, payload, test_type):
         result = self.simulate_post('/orders', json=payload)
         resp = result.json
+
         if test_type == testdata.std_post:
             self.assertIn(spec.resp_msg_key, resp)
             self.assertIn(spec.post_success_resp_msg, resp["Message"])
             self.assertEqual(falcon.HTTP_201, result.status)
+
         elif test_type == testdata.wrong_json_format_post:
             self.assertIn(spec.resp_msg_key, resp)
             self.assertEqual(spec.post_json_missing_key_err_msg, resp["Message"])
             self.assertEqual(falcon.HTTP_400, result.status)
+
         elif test_type == testdata.non_numerical_quantity_post:
             pass
 
