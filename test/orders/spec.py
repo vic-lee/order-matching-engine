@@ -29,3 +29,7 @@ order_keys = [\
     order_type_key, order_status_key, order_time_key\
 ]
 order_keys_on_init = [order_symbol_key, order_quantity_key, order_type_key]
+
+resp_msg_key = "Message"
+post_success_resp_msg = "Post successful"
+req_trader_missing_err_msg = "The trader you requested does not exist"
