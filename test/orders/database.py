@@ -1,5 +1,4 @@
-# from orders.orders_spec import *
-import orders.orders_spec as spec
+import orders.spec as spec
 
 class OrdersDatabase:
     """
