@@ -73,6 +73,7 @@ class TestOrdersGet(TestOrders):
                 self.simulate_post('/orders', json=p)
         else:
             self.simulate_post('/orders', json=payload)
+
         if trader_id == None:
             self.handle_get_all_trade_orders(payload)
         else:
@@ -83,6 +84,7 @@ class TestOrdersGet(TestOrders):
         param = {"trader_id": trader_id}
         result = self.simulate_get(self.order_endpoint, params=param)
         resp = result.json
+        self.assertEqual(falcon.HTTP_200, result.status)
         self.assertIn(spec.data_key, resp)
         for order in data_sent:
             self.assertOrderExists(order, resp[spec.data_key])
@@ -91,7 +93,7 @@ class TestOrdersGet(TestOrders):
     def handle_get_all_trade_orders(self, data_sent):
         result = self.simulate_get(self.order_endpoint)
         resp = result.json
-
+        self.assertEqual(falcon.HTTP_200, result.status)
         if spec.data_key not in resp:
             '''Expect getting order data from multiple traders'''
             for payload in data_sent:
@@ -106,7 +108,24 @@ class TestOrdersGet(TestOrders):
 
 class TestOrdersMatching(TestOrders):
     def test_order_matching(self):
-        pass
+        self.order_matching_test_handler(testdata.order_matching_data)
+
+    def order_matching_test_handler(self, payload):
+        """
+        Edge case warning: if any order in order_matching_data has a
+        matching order from previous tests, the matching engine may
+        fill that order instead of the one tested hereself.
+        For better testability, consider data from API before this test.
+        """
+        for p in payload:
+            self.simulate_post(self.order_endpoint, json=p)
+        result = self.simulate_get(self.order_endpoint)
+        resp = result.json
+        self.assertEqual(falcon.HTTP_200, result.status)
+        for p in payload:
+            trader_id = p[spec.data_key][spec.trader_id_key]
+            self.assertEqual(spec.order_status_filled,\
+             resp[trader_id][spec.order_key][0][spec.order_status_key])
 
 # if __name__ == "__main__":
 #     unittest.main()
