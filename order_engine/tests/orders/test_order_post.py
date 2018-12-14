@@ -26,6 +26,7 @@ class TestOrdersPost(TestOrders):
             trader_id = payload[spec.data_key][spec.trader_id_key]
             orders_to_post = payload[spec.data_key][spec.order_key]
 
+            # verify data is posted in database
             param = {"trader_id": trader_id}
             verify_data = self.simulate_get(self.order_endpoint, params=param)
             resp = verify_data.json
@@ -42,6 +43,3 @@ class TestOrdersPost(TestOrders):
             self.assertIn(spec.resp_msg_key, resp)
             self.assertEqual(spec.post_json_missing_key_err_msg, resp["Message"])
             self.assertEqual(falcon.HTTP_400, result.status)
-
-        elif test_type == testdata.non_numerical_quantity_post:
-            pass
